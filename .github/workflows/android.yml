@@ -67,7 +67,7 @@ jobs:
         cache-dependency-path: web/package-lock.json
 
     - name: Install Web Dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
       working-directory: ./web
 
     - name: Run Jest Web Tests
