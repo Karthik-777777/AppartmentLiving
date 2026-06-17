@@ -79,6 +79,8 @@ jobs:
     - name: Build Web Application
       run: npm run build
       working-directory: ./web
+      env:
+        CI: false
 
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
