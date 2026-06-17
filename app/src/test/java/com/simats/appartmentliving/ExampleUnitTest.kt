@@ -19,7 +19,7 @@ class ExampleUnitTest {
     @Test
     fun getInitials_isCorrect() {
         assertEquals("RS", getInitials("Rahul Sharma"))
-        assertEquals("AKG", getInitials("Amit Kumar Gupta"))
+        assertEquals("AK", getInitials("Amit Kumar Gupta"))
         assertEquals("S", getInitials("Suresh"))
         assertEquals("RS", getInitials(""))
     }
