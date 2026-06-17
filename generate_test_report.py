@@ -1225,5 +1225,43 @@ def generate_report():
     wb.save("E2E_Test_Report.xlsx")
     print("Test execution report generated: E2E_Test_Report.xlsx")
 
+    # Write to GitHub Actions Job Summary if running in CI
+    import os
+    summary_file = os.getenv("GITHUB_STEP_SUMMARY")
+    if summary_file:
+        try:
+            with open(summary_file, "w") as f:
+                f.write("### 🏢 ApartmentLiving - E2E & Functional Test Execution Summary\n\n")
+                f.write("#### 📊 Key Performance Metrics\n")
+                f.write("| Metric | Value | Status / Notes |\n")
+                f.write("| :--- | :--- | :--- |\n")
+                for metric, val, note in metrics_data:
+                    val_str = f"{val * 100:.0f}%" if metric == "Pass Rate" else str(val)
+                    if val in ["PASS", "READY"] or metric in ["Passed Cases", "Total Test Cases"] or (metric == "Pass Rate" and val == 1.0):
+                        status_str = f"🟢 **{val_str}**"
+                    elif val == "FAIL":
+                        status_str = f"🔴 **{val_str}**"
+                    else:
+                        status_str = f"**{val_str}**"
+                    f.write(f"| {metric} | {status_str} | {note} |\n")
+                
+                f.write("\n#### 📂 Test Category Distribution\n")
+                f.write("| Category | Total Cases | Passed | Blocked | Pass Rate |\n")
+                f.write("| :--- | :--- | :--- | :--- | :--- |\n")
+                for cat, tot, p, b, pr in category_data:
+                    pass_rate_str = f"{pr * 100:.0f}%"
+                    status_bullet = "🟢" if pr == 1.0 else "🟡"
+                    f.write(f"| {cat} | {tot} | {p} | {b} | {status_bullet} {pass_rate_str} |\n")
+                
+                f.write("\n#### 🧩 Module Test Statistics\n")
+                f.write("| Module / Area | Cases | Status |\n")
+                f.write("| :--- | :--- | :--- |\n")
+                for mod, cnt, st in module_data:
+                    status_str = "🟢 Passed" if st == "Passed" else f"🟡 {st}"
+                    f.write(f"| {mod} | {cnt} | {status_str} |\n")
+            print("Successfully wrote GITHUB_STEP_SUMMARY")
+        except Exception as e:
+            print(f"Error writing GITHUB_STEP_SUMMARY: {e}")
+
 if __name__ == "__main__":
     generate_report()
